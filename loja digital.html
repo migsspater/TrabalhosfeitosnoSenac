@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PixelForge Games — Loja</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    /* Pequenas customizações */
+    .hero {
+      background: linear-gradient(90deg, rgba(25,25,112,0.95), rgba(72,61,139,0.95));
+      color: white;
+      padding: 4rem 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+    }
+    .game-card img { height: 50px; object-fit: cover; }
+    .badge-stock { font-size: .8rem; }
+    @media (min-width: 600px) {
+      .hero { padding: 6rem 2rem; }
+      .game-card img { height: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="C:\Users\migsp\OneDrive\Área de Trabalho\Projeto Final\imagens\console-e-ninja-para-design-de-logotipo-de-jogos_100735-52.avif"alt="logo" class="me-2 rounded" width: 20px; height: 35px; >
+        <span>PixelForge Games</span>
+        
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#">Loja</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Novidades</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Suporte</a></li>
+        </ul>
+
+        <!-- BUSCA -->
+        <form id="searchForm" class="d-flex me-3" role="search" onsubmit="event.preventDefault(); filterProducts();">
+          <input id="searchInput" class="form-control me-2" type="search" placeholder="Buscar jogos..." aria-label="Buscar">
+          <button class="btn btn-outline-light" type="submit">Buscar</button>
+        </form>
+
+        <!-- CART BUTTON -->
+        <button id="cartBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
+          Carrinho <span id="cartCount" class="badge bg-light text-dark ms-2">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTAINER -->
+  <main class="container my-4">
+
+    <!-- HERO -->
+    <section class="hero text-center">
+      <h1 class="display-6 fw-bold">Loja oficial — PixelForge</h1>
+      <p class="lead mb-3">Jogos indie, DLCs e conteúdo exclusivo. Compre agora e mergulhe em novas aventuras.</p>
+      <a href="#catalog" class="btn btn-outline-light btn-lg">Ver lançamentos</a>
+    </section>
+
+    <!-- FILTROS / CATEGORIAS (simples) -->
+    <section class="mt-4 d-flex flex-column flex-md-row gap-2 align-items-center">
+      <div class="me-auto">
+        <small class="text-muted">Filtrar por categoria:</small>
+        <div class="btn-group ms-2" role="group" aria-label="Categorias">
+          <button class="btn btn-sm btn-outline-secondary active" onclick="filterByCategory('all')">Todos</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="filterByCategory('RPG')">RPG</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="filterByCategory('Ação')">Ação</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="filterByCategory('Indie')">Indie</button>
+        </div>
+      </div>
+      <div>
+        <small class="text-muted">Ordenar:</small>
+        <select id="sortSelect" class="form-select form-select-sm d-inline-block w-auto ms-2" onchange="sortProducts(this.value)">
+          <option value="default">Padrão</option>
+          <option value="price-asc">Preço: menor</option>
+          <option value="price-desc">Preço: maior</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- CATALOG / GRID -->
+    <section id="catalog" class="mt-3">
+      <div id="productsRow" class="row g-3">
+        <!-- Exemplo de produto (replicar ou gerar por back-end) -->
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="card game-card h-100" data-id="1" data-name="Minecraft" data-price="59.90" data-stock="12" data-category="RPG">
+            <img src="C:\Users\migsp\OneDrive\Área de Trabalho\Projeto Final\imagens\download.webp" class="card-img-top" alt="Minecraft">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Minecraft</h5>
+              <p class="card-text text-truncate">RPG épico single-player com mundo aberto e combates táticos.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="h6 mb-0">R$ <span class="price">59.90</span></div>
+                  <small class="text-muted">PC • Steam key</small>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-success badge-stock" id="stock-1">Em estoque: 12</span>
+                  <button class="btn btn-sm btn-primary d-block mt-2" onclick="addToCartCard(this)">Adicionar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Produto 2 -->
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="card game-card h-100" data-id="2" data-name="Darksiders" data-price="29.50" data-stock="0" data-category="Ação">
+            <img src="C:\Users\migsp\OneDrive\Área de Trabalho\Projeto Final\imagens\Diesel_productv2_darksiders_home_HeroeCarousel-1920x1080-33c0176573f7d7248a1784009ed22bf7566feb72.jpg" class="card-img-top" alt="Darksiders">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Darksiders</h5>
+              <p class="card-text text-truncate">Ação frenética com combates aéreos e multiplayer competitivo.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="h6 mb-0">R$ <span class="price">29.50</span></div>
+                  <small class="text-muted">PC • Steam key</small>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-danger badge-stock" id="stock-2">Esgotado</span>
+                  <button class="btn btn-sm btn-secondary d-block mt-2" disabled>Sem estoque</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Produto 3 -->
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="card game-card h-100" data-id="3" data-name="Hollownight" data-price="9.99" data-stock="50" data-category="Indie">
+            <img src="C:\Users\migsp\OneDrive\Área de Trabalho\Projeto Final\imagens\Hollow_Knight_Cover.jpg" class="card-img-top" alt="Hollownight">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Hollownight</h5>
+              <p class="card-text text-truncate">Plataforma indie com estética retrô e fase design criativo.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="h6 mb-0">R$ <span class="price">9.99</span></div>
+                  <small class="text-muted">PC • DRM-free</small>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-success badge-stock" id="stock-3">Em estoque: 50</span>
+                  <button class="btn btn-sm btn-primary d-block mt-2" onclick="addToCartCard(this)">Adicionar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- mais cards... -->
+      </div>
+    </section>
+
+    <!-- PAGINATION (simples placeholder) -->
+    <nav class="mt-4" aria-label="Navegação de páginas">
+      <ul class="pagination justify-content-center">
+        <li class="page-item disabled"><a class="page-link">Anterior</a></li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">Próxima</a></li>
+      </ul>
+    </nav>
+
+  </main>
+
+  <!-- CART MODAL -->
+  <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Seu carrinho</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="cartItemsContainer">
+            <!-- Itens são inseridos via JS -->
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <div><strong>Total:</strong> R$ <span id="cartTotal">0.00</span></div>
+            <div>
+              <button class="btn btn-secondary me-2" onclick="clearCart()">Esvaziar</button>
+              <button class="btn btn-primary" onclick="checkout()">Finalizar compra</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"><small class="text-muted">Pagamento simulado no checkout.</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-light py-4 mt-5">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div>© <strong>PixelForge Games</strong> — Todos os direitos reservados</div>
+      <div class="mt-2 mt-md-0">
+        <a href="#" class="text-light text-decoration-none me-3">Termos</a>
+        <a href="#" class="text-light text-decoration-none">Privacidade</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BOOTSTRAP JS (Popper + Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Pequeno JS para demo do carrinho usando localStorage -->
+  <script>
+    // Inicia contagem do carrinho ao carregar
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCartCount();
+      renderCartModal();
+    });
+
+    function getCart() {
+      return JSON.parse(localStorage.getItem('pf_cart') || '[]');
+    }
+    function setCart(cart) {
+      localStorage.setItem('pf_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartModal();
+    }
+    function updateCartCount() {
+      const cart = getCart();
+      const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cartCount').textContent = totalQty;
+    }
+
+    // Ao clicar em "Adicionar" no card
+    function addToCartCard(btn) {
+      const card = btn.closest('.card');
+      const id = card.dataset.id;
+      const name = card.dataset.name;
+      const price = parseFloat(card.dataset.price);
+      const stock = parseInt(card.dataset.stock, 10);
+
+      if (stock <= 0) { alert('Produto sem estoque'); return; }
+
+      const cart = getCart();
+      const existing = cart.find(i => i.id === id);
+      if (existing) {
+        if (existing.qty + 1 > stock) { alert('Atingiria o limite do estoque'); return; }
+        existing.qty++;
+      } else {
+        cart.push({ id, name, price, qty: 1, stock });
+      }
+      setCart(cart);
+      // feedback rápido
+      btn.textContent = 'Adicionado';
+      setTimeout(() => btn.textContent = 'Adicionar', 900);
+    }
+
+    // Renderiza itens no modal
+    function renderCartModal() {
+      const container = document.getElementById('cartItemsContainer');
+      const cart = getCart();
+      container.innerHTML = '';
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-muted">Seu carrinho está vazio.</p>';
+        document.getElementById('cartTotal').textContent = '0.00';
+        return;
+      }
+
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        const row = document.createElement('div');
+        row.className = 'd-flex align-items-center mb-3';
+        row.innerHTML = `
+          <div class="flex-shrink-0 me-3" style="width:80px">
+            <img src="https://via.placeholder.com/80x60.png?text=Game" alt="${escapeHtml(item.name)}" class="img-fluid rounded">
+          </div>
+          <div class="flex-grow-1">
+            <div class="fw-bold">${escapeHtml(item.name)}</div>
+            <div class="text-muted">R$ ${item.price.toFixed(2)} x ${item.qty} = R$ ${(item.price*item.qty).toFixed(2)}</div>
+          </div>
+          <div class="text-end">
+            <div class="btn-group" role="group">
+              <button class="btn btn-sm btn-outline-secondary" onclick="changeQty('${item.id}', -1)">−</button>
+              <button class="btn btn-sm btn-outline-secondary" onclick="changeQty('${item.id}', 1)">+</button>
+            </div>
+            <div class="mt-2"><button class="btn btn-sm btn-link text-danger" onclick="removeFromCart('${item.id}')">Remover</button></div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('cartTotal').textContent = total.toFixed(2);
+    }
+
+    function changeQty(id, delta) {
+      const cart = getCart();
+      const idx = cart.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      const item = cart[idx];
+      const newQty = item.qty + delta;
+      if (newQty <= 0) {
+        // remover
+        cart.splice(idx,1);
+      } else if (newQty > item.stock) {
+        alert('Limite de estoque atingido.');
+        return;
+      } else {
+        cart[idx].qty = newQty;
+      }
+      setCart(cart);
+    }
+
+    function removeFromCart(id) {
+      const cart = getCart().filter(i => i.id !== id);
+      setCart(cart);
+    }
+
+    function clearCart() {
+      if (!confirm('Esvaziar carrinho?')) return;
+      localStorage.removeItem('pf_cart');
+      updateCartCount();
+      renderCartModal();
+    }
+
+    function checkout() {
+      const cart = getCart();
+      if (cart.length === 0) { alert('Carrinho vazio.'); return; }
+      // Simulação: aqui você chamaria o endpoint PHP para criar o pedido (POST /checkout)
+      // Para demo local, vamos só limpar e mostrar mensagem
+      alert('Checkout simulado — em um projeto real, aqui você enviaria os dados ao servidor (PHP).');
+      clearCart();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+      modal.hide();
+    }
+
+    // Busca simples
+    function filterProducts() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('#productsRow .card.game-card');
+      cards.forEach(c => {
+        const name = c.dataset.name.toLowerCase();
+        const desc = (c.querySelector('.card-text')?.textContent || '').toLowerCase();
+        c.parentElement.style.display = (name.includes(q) || desc.includes(q)) ? '' : 'none';
+      });
+    }
+
+    function filterByCategory(cat) {
+      const buttons = document.querySelectorAll('.btn-group button');
+      buttons.forEach(b => b.classList.toggle('active', b.textContent === cat || (cat==='all' && b.textContent==='Todos')));
+      const cards = document.querySelectorAll('#productsRow .card.game-card');
+      cards.forEach(c => {
+        c.parentElement.style.display = (cat === 'all' || c.dataset.category === cat) ? '' : 'none';
+      });
+    }
+
+    function sortProducts(mode) {
+      const container = document.getElementById('productsRow');
+      const cards = Array.from(container.children);
+      if (mode === 'default') {
+        // Não implementado: manter ordem original (poderia re-renderizar a partir do servidor)
+        return;
+      }
+      cards.sort((a,b) => {
+        const pa = parseFloat(a.querySelector('.price').textContent);
+        const pb = parseFloat(b.querySelector('.price').textContent);
+        return mode === 'price-asc' ? pa - pb : pb - pa;
+      });
+      container.innerHTML = '';
+      cards.forEach(c => container.appendChild(c));
+    }
+
+    // Pequena função de segurança para texto
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+  </script>
+</body>
+</html>
